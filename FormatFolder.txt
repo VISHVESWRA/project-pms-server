@@ -1,0 +1,29 @@
+backend/
+│
+├── src/
+│   ├── config/
+│   │   └── db.js              # MongoDB connection
+│   │
+│   ├── models/
+│   │   └── user.model.js      # Mongoose schemas
+│   │
+│   ├── controllers/
+│   │   └── user.controller.js # Business logic
+│   │
+│   ├── routes/
+│   │   └── user.routes.js     # API routes
+│   │
+│   ├── middleware/
+│   │   ├── auth.middleware.js # JWT/auth logic
+│   │   └── error.middleware.js# Error handling
+│   │
+│   ├── utils/
+│   │   └── generateToken.js   # Helper functions
+│   │
+│   ├── app.js                 # Express app setup
+│   └── server.js              # App start point
+│
+├── .env                       # Environment variables
+├── .gitignore
+├── package.json
+└── README.md
