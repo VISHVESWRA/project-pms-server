@@ -3,6 +3,7 @@ import cors from "cors";
 import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import incomeRoutes from "./routes/income.routes.js";
+import expenseRoutes from "./routes/expense.routes.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
 app.use("/api/income", incomeRoutes);
+app.use("/api/expenses", expenseRoutes);
 
 app.get("/", (req, res) => {
   res.send("API running...");
