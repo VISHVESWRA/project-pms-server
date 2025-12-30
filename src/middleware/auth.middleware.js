@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith("Bearer")) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ message: "No token" });
   }
 
@@ -12,8 +12,8 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ THIS IS THE KEY FIX
-    req.user = { id: decoded.id };
+    // ✅ MATCH LOGIN PAYLOAD
+    req.user = { id: decoded.userId };
 
     next();
   } catch (error) {

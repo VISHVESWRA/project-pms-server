@@ -1,4 +1,5 @@
 import Income from "../models/income.model.js";
+import mongoose from "mongoose";
 
 /**
  * @desc Create income
@@ -6,7 +7,7 @@ import Income from "../models/income.model.js";
  */
 export const createIncome = async (req, res) => {
   try {
-    console.log("create");
+    console.log("REQ.USER:", req.user);
 
     const income = await Income.create({
       ...req.body,
@@ -44,7 +45,7 @@ export const updateIncome = async (req, res) => {
     const income = await Income.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
       req.body,
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!income) {
@@ -73,6 +74,29 @@ export const deleteIncome = async (req, res) => {
     }
 
     res.json({ message: "Income deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// GET /api/income/total
+export const getTotalIncome = async (req, res) => {
+  try {
+    const result = await Income.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    res.json({ total: result[0]?.total || 0 });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
