@@ -10,27 +10,32 @@ const chitSchema = new mongoose.Schema(
 
     groupName: {
       type: String,
+      required: true,
       trim: true,
     },
 
     totalAmount: {
       type: Number,
       required: true,
+      min: 1,
     },
 
     monthlyAmount: {
       type: Number,
       required: true,
+      min: 1,
     },
 
     duration: {
       type: Number,
       required: true,
+      min: 1,
     },
 
     paidMonths: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     startDate: {
@@ -44,10 +49,20 @@ const chitSchema = new mongoose.Schema(
       default: "upcoming",
     },
 
-    lastPaidDate: Date,
-    closedDate: Date,
+    lastPaidDate: {
+      type: Date,
+      default: null,
+    },
+
+    closedDate: {
+      type: Date,
+      default: null,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false,
+  }
 );
 
 export default mongoose.model("Chit", chitSchema);
