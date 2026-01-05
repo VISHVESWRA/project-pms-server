@@ -7,11 +7,12 @@ import expenseRoutes from "./routes/expense.routes.js";
 import policyRoutes from "./routes/policy.routes.js";
 import loanRoutes from "./routes/loan.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
+import chitRoutes from "./routes/chit.routes.js";
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
 console.log("🔥 app.js loaded");
 
@@ -22,6 +23,7 @@ app.use("/api/income", incomeRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/policies", policyRoutes);
 app.use("/api/loans", loanRoutes);
+app.use("/api/chits", chitRoutes);
 
 app.use("/api/dashboard", dashboardRoutes);
 
