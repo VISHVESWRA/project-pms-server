@@ -37,26 +37,52 @@ export const createChit = async (req, res) => {
    GET ALL (FIXED)
 ========================== */
 export const getChits = async (req, res) => {
-  console.log("gets");
-
   try {
-    const chits = await Chit.find().sort({ createdAt: -1 });
+    const chits = await Chit.find();
 
-    const result = chits.map((chit) => {
-      const duration = chit.duration || 1; // 🛡 SAFETY
-      const paid = chit.paidMonths || 0;
+    const today = new Date();
 
-      return {
-        ...chit.toObject(),
-        status: getStatus(chit),
-        progress: Math.round((paid / duration) * 100),
-        remainingMonths: Math.max(duration - paid, 0),
-      };
-    });
+    const updated = await Promise.all(
+      chits.map(async (chit) => {
+        // ---- STATUS UPDATE ----
+        if (today < chit.startDate) {
+          chit.status = "upcoming";
+        } else if (chit.paidMonths >= chit.duration) {
+          chit.status = "closed";
+          chit.closedDate = chit.closedDate || today;
+        } else {
+          chit.status = "active";
+        }
 
-    res.json(result);
-  } catch (err) {
-    console.error("GET CHITS ERROR:", err);
+        await chit.save();
+
+        const duration = chit.duration || 1;
+        const paid = chit.paidMonths || 0;
+
+        // ---- CALCULATIONS ----
+        const progress = Math.round((paid / duration) * 100);
+
+        const nextDueDate =
+          chit.status === "active"
+            ? new Date(
+                new Date(chit.startDate).setMonth(
+                  chit.startDate.getMonth() + paid + 1
+                )
+              )
+            : null;
+
+        return {
+          ...chit.toObject(),
+          progress,
+          remainingMonths: duration - paid,
+          nextDueDate,
+        };
+      })
+    );
+
+    res.json(updated);
+  } catch (error) {
+    console.error("GET CHITS ERROR:", error);
     res.status(500).json({ message: "Failed to fetch chits" });
   }
 };
