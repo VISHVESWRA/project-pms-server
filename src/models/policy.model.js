@@ -1,22 +1,5 @@
 import mongoose from "mongoose";
 
-// const policySchema = new mongoose.Schema(
-//   {
-//     policyName: { type: String, required: true },
-//     policyType: { type: String },
-//     provider: { type: String },
-//     policyNumber: { type: String },
-//     premiumAmount: { type: Number, required: true },
-//     frequency: { type: String },
-//     status: { type: String, default: "active" },
-//     startDate: { type: Date },
-//     endDate: { type: Date },
-//     nominee: { type: String },
-//     notes: { type: String },
-//   },
-//   { timestamps: true }
-// );
-
 const policySchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -31,6 +14,10 @@ const policySchema = new mongoose.Schema(
     endDate: Date,
     nominee: String,
     notes: String,
+
+    appliedDocument: {
+      type: String, // file path
+    },
 
     // derived status
     status: {

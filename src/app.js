@@ -25,6 +25,8 @@ app.use("/api/policies", policyRoutes);
 app.use("/api/loans", loanRoutes);
 app.use("/api/chits", chitRoutes);
 
+app.use("/uploads", express.static("uploads"));
+
 app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {

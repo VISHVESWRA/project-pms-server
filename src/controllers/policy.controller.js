@@ -16,6 +16,9 @@ export const createPolicy = async (req, res) => {
     const policy = new Policy({
       ...req.body,
       status,
+      appliedDocument: req.file
+        ? `/uploads/policies/${req.file.filename}`
+        : null,
     });
 
     await policy.save();
@@ -64,13 +67,21 @@ export const updatePolicy = async (req, res) => {
   try {
     const status = getPolicyStatus(req.body.startDate, req.body.endDate);
 
-    const policy = await Policy.findByIdAndUpdate(
-      req.params.id,
-      { ...req.body, status },
-      { new: true }
-    );
+    const updateData = {
+      ...req.body,
+      status,
+    };
+
+    if (req.file) {
+      updateData.appliedDocument = `/uploads/policies/${req.file.filename}`;
+    }
+
+    const policy = await Policy.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+    });
 
     if (!policy) return res.status(404).json({ message: "Policy not found" });
+
     res.json(policy);
   } catch (error) {
     res.status(500).json({ message: error.message });

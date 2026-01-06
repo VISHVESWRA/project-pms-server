@@ -6,13 +6,14 @@ import {
   updatePolicy,
   deletePolicy,
 } from "../controllers/policy.controller.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-router.post("/", createPolicy);
+router.post("/", upload.single("document"), createPolicy);
 router.get("/", getPolicies);
 router.get("/:id", getPolicy);
-router.put("/:id", updatePolicy);
+router.put("/:id", upload.single("document"), updatePolicy);
 router.delete("/:id", deletePolicy);
 
 export default router;
