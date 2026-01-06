@@ -11,19 +11,21 @@ const getPolicyStatus = (startDate, endDate) => {
 // Create Policy
 export const createPolicy = async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
     const status = getPolicyStatus(req.body.startDate, req.body.endDate);
 
     const policy = new Policy({
       ...req.body,
+      appliedDocument: req.file ? req.file.path : null,
       status,
-      appliedDocument: req.file
-        ? `/uploads/policies/${req.file.filename}`
-        : null,
     });
 
     await policy.save();
     res.status(201).json(policy);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -73,14 +75,12 @@ export const updatePolicy = async (req, res) => {
     };
 
     if (req.file) {
-      updateData.appliedDocument = `/uploads/policies/${req.file.filename}`;
+      updateData.appliedDocument = req.file.path;
     }
 
     const policy = await Policy.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
     });
-
-    if (!policy) return res.status(404).json({ message: "Policy not found" });
 
     res.json(policy);
   } catch (error) {
