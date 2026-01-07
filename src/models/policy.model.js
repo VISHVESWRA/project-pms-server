@@ -16,8 +16,7 @@ const policySchema = new mongoose.Schema(
     notes: String,
 
     appliedDocument: {
-      url: String,
-      publicId: String,
+      type: String, // Cloudinary URL
     },
 
     // derived status
