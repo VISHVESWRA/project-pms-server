@@ -1,4 +1,5 @@
 import Policy from "../models/policy.model.js";
+import cloudinary from "../config/cloudinary.js";
 
 const getPolicyStatus = (startDate, endDate) => {
   const today = new Date();
@@ -11,18 +12,17 @@ const getPolicyStatus = (startDate, endDate) => {
 // Create Policy
 export const createPolicy = async (req, res) => {
   try {
-    const status = getPolicyStatus(req.body.startDate, req.body.endDate);
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
 
     const policy = new Policy({
       ...req.body,
-      status,
       appliedDocument: req.file ? req.file.path : null,
     });
 
     await policy.save();
     res.status(201).json(policy);
   } catch (error) {
-    console.error("CREATE POLICY ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -62,24 +62,38 @@ export const getPolicy = async (req, res) => {
 };
 
 // Update Policy
+
 export const updatePolicy = async (req, res) => {
   try {
-    const status = getPolicyStatus(req.body.startDate, req.body.endDate);
+    const policy = await Policy.findById(req.params.id);
+
+    if (!policy) {
+      return res.status(404).json({ message: "Policy not found" });
+    }
+
+    // delete old file if new file uploaded
+    if (req.file && policy.appliedDocument?.publicId) {
+      await cloudinary.uploader.destroy(policy.appliedDocument.publicId);
+    }
 
     const updateData = {
       ...req.body,
-      status,
     };
 
     if (req.file) {
-      updateData.appliedDocument = req.file.path;
+      updateData.appliedDocument = {
+        url: req.file.path,
+        publicId: req.file.filename,
+      };
     }
 
-    const policy = await Policy.findByIdAndUpdate(req.params.id, updateData, {
-      new: true,
-    });
+    const updatedPolicy = await Policy.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
 
-    res.json(policy);
+    res.json(updatedPolicy);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

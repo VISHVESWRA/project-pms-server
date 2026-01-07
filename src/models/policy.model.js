@@ -16,7 +16,8 @@ const policySchema = new mongoose.Schema(
     notes: String,
 
     appliedDocument: {
-      type: String, // file path
+      url: String,
+      publicId: String,
     },
 
     // derived status

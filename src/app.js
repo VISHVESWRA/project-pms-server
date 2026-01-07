@@ -8,6 +8,7 @@ import policyRoutes from "./routes/policy.routes.js";
 import loanRoutes from "./routes/loan.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import chitRoutes from "./routes/chit.routes.js";
+import path from "path";
 
 const app = express();
 

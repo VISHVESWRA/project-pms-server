@@ -10,10 +10,10 @@ import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-router.post("/", upload.single("appliedDocument"), createPolicy);
+router.post("/", upload.single("document"), createPolicy);
+router.put("/:id", upload.single("document"), updatePolicy);
 router.get("/", getPolicies);
 router.get("/:id", getPolicy);
-router.put("/:id", upload.single("appliedDocument"), updatePolicy);
 router.delete("/:id", deletePolicy);
 
 export default router;
