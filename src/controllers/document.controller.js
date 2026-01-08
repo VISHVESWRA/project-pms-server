@@ -3,12 +3,20 @@ import streamifier from "streamifier";
 import Document from "../models/document.model.js";
 
 // Helper function to upload to cloudinary
-const uploadToCloudinary = (buffer, folder) => {
+const uploadToCloudinary = (buffer, folder, fileType) => {
   return new Promise((resolve, reject) => {
+    // Determine resource_type based on file type
+    let resourceType = "auto";
+    if (fileType === "application/pdf") {
+      resourceType = "raw"; // PDFs must use 'raw' type
+    } else if (fileType.startsWith("image/")) {
+      resourceType = "image";
+    }
+
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder: folder,
-        resource_type: "auto",
+        resource_type: resourceType,
       },
       (error, result) => {
         if (error) {
@@ -41,7 +49,11 @@ export const uploadDocument = async (req, res, next) => {
 
     // Upload to Cloudinary
     const folder = `pms_documents/${documentType}`;
-    const result = await uploadToCloudinary(req.file.buffer, folder);
+    const result = await uploadToCloudinary(
+      req.file.buffer,
+      folder,
+      req.file.mimetype
+    );
 
     // Create document in database
     const document = new Document({
