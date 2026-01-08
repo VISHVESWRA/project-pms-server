@@ -17,18 +17,18 @@ const app = express();
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://your-frontend.onrender.com", // later
-      "https://project-pms.netlify.app/",
-    ],
+    origin: ["http://localhost:5173", "https://project-pms.netlify.app"],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
+
+// 🚨 REQUIRED for Netlify + Axios
+app.options("*", cors());
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
@@ -43,7 +43,6 @@ app.use("/api/chits", chitRoutes);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/documents", documentRoutes);
