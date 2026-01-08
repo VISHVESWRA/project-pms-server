@@ -8,7 +8,10 @@ import policyRoutes from "./routes/policy.routes.js";
 import loanRoutes from "./routes/loan.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import chitRoutes from "./routes/chit.routes.js";
+import documentRoutes from "./routes/document.routes.js";
 import path from "path";
+import { fileURLToPath } from "url";
+import { errorHandler } from "./middleware/errorHandler.middleware.js";
 
 const app = express();
 
@@ -35,9 +38,19 @@ app.use("/api/policies", policyRoutes);
 app.use("/api/loans", loanRoutes);
 app.use("/api/chits", chitRoutes);
 
-app.use("/uploads", express.static("uploads"));
+// app.use("/uploads", express.static("uploads"));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use("/api/documents", documentRoutes);
 
 app.use("/api/dashboard", dashboardRoutes);
+
+// Error handling
+app.use(errorHandler);
 
 app.get("/", (req, res) => {
   res.send("API running...");
