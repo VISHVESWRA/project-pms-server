@@ -24,9 +24,6 @@ app.use(
   })
 );
 
-// 🚨 REQUIRED for Netlify + Axios
-app.options("*", cors());
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
