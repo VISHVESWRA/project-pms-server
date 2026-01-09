@@ -52,6 +52,9 @@ export const login = async (req, res) => {
 
 /* FORGOT PASSWORD */
 export const forgotPassword = async (req, res) => {
+  console.log("jwt", process.env.JWT_SECRET);
+  console.log(req.body);
+
   const { email } = req.body;
 
   const user = await User.findOne({ email });
@@ -68,7 +71,11 @@ export const forgotPassword = async (req, res) => {
     `Reset Link: http://localhost:3000/reset-password?token=${resetToken}`
   );
 
-  res.json({ message: "Password reset link sent" });
+  console.log("link");
+
+  res.json({
+    message: `Reset Link: http://localhost:3000/reset-password?token=${resetToken}`,
+  });
 };
 
 /* RESET PASSWORD */

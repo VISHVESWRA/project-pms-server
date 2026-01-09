@@ -17,7 +17,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://project-pms.netlify.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://project-pms.netlify.app",
+      "https://project-pms-dbserver.onrender.com",
+    ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -25,7 +29,7 @@ app.use(
 );
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
